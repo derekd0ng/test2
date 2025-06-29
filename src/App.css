@@ -1,150 +1,332 @@
+/* Import modern font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .App {
   text-align: center;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Glassmorphism background */
+.App::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  z-index: -2;
+}
+
+.App::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(0, 0, 0, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 40% 70%, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+  z-index: -1;
 }
 
 .App-header {
-  background-color: #282c34;
   min-height: 100vh;
-  padding: 20px;
+  padding: 40px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  color: white;
+  color: #1a1a1a;
+  position: relative;
 }
 
 .App-header h1 {
-  margin-bottom: 30px;
-  font-size: 2.5rem;
+  margin-bottom: 40px;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  letter-spacing: -0.02em;
 }
 
+/* Glass container for form */
 .add-habit-form {
   display: flex;
-  gap: 10px;
-  margin-bottom: 30px;
+  gap: 12px;
+  margin-bottom: 40px;
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .habit-input {
   flex: 1;
-  padding: 12px;
+  padding: 16px 20px;
   font-size: 16px;
+  font-weight: 400;
   border: none;
-  border-radius: 4px;
+  border-radius: 12px;
   outline: none;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1a1a1a;
+  placeholder-color: #666;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.habit-input:focus {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 
+    inset 0 2px 4px rgba(0, 0, 0, 0.1),
+    0 0 0 3px rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.habit-input::placeholder {
+  color: #666;
+  font-weight: 400;
 }
 
 .add-button {
-  padding: 12px 20px;
-  background-color: #61dafb;
-  color: #282c34;
+  padding: 16px 24px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 12px;
   cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.2s;
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .add-button:hover {
-  background-color: #21a1c4;
+  background: rgba(0, 0, 0, 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.add-button:active {
+  transform: translateY(0);
 }
 
 .habits-list {
   width: 100%;
-  max-width: 600px;
+  max-width: 700px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
 }
 
+/* Glass morphism habit cards */
 .habit-item {
-  background-color: #3a3f47;
-  border-radius: 8px;
-  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.habit-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+.habit-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
 }
 
 .habit-item.completed {
-  background-color: #2d5a3d;
-  border: 2px solid #4caf50;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.habit-item.completed::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+  pointer-events: none;
 }
 
 .habit-info h3 {
-  margin: 0 0 10px 0;
-  font-size: 1.2rem;
+  margin: 0 0 12px 0;
+  font-size: 1.3rem;
+  font-weight: 600;
   text-align: left;
+  color: #ffffff;
+  letter-spacing: -0.01em;
 }
 
 .habit-info p {
-  margin: 5px 0;
+  margin: 4px 0;
   font-size: 0.9rem;
-  color: #ccc;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.8);
   text-align: left;
 }
 
 .habit-actions {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   flex-direction: column;
 }
 
+/* Glass buttons */
 .complete-button {
-  padding: 8px 16px;
-  background-color: #4caf50;
-  color: white;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1a1a1a;
   border: none;
-  border-radius: 4px;
+  border-radius: 12px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.2s;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .complete-button:hover {
-  background-color: #45a049;
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 .complete-button.completed {
-  background-color: #2e7d32;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.complete-button.completed:hover {
+  background: rgba(0, 0, 0, 0.9);
 }
 
 .delete-button {
-  padding: 8px 16px;
-  background-color: #f44336;
+  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.6);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 12px;
   cursor: pointer;
   font-size: 14px;
-  transition: background-color 0.2s;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .delete-button:hover {
-  background-color: #d32f2f;
+  background: rgba(220, 38, 38, 0.8);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .no-habits {
-  color: #ccc;
+  color: rgba(255, 255, 255, 0.7);
   font-style: italic;
-  margin-top: 50px;
+  font-weight: 400;
+  margin-top: 60px;
+  font-size: 1.1rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
+/* Responsive design */
 @media (max-width: 768px) {
+  .App-header {
+    padding: 20px 15px;
+  }
+  
+  .App-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+  }
+  
   .habit-item {
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
     text-align: center;
+    padding: 20px;
   }
   
   .habit-actions {
     flex-direction: row;
     justify-content: center;
+    width: 100%;
   }
   
   .add-habit-form {
     flex-direction: column;
+    gap: 16px;
+  }
+  
+  .complete-button,
+  .delete-button {
+    flex: 1;
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .App-header h1 {
+    font-size: 2rem;
+  }
+  
+  .add-habit-form {
+    margin: 0 10px 30px;
+  }
+  
+  .habits-list {
+    margin: 0 10px;
   }
 }
