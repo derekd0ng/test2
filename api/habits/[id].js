@@ -1,7 +1,7 @@
 // Simple in-memory storage (shared with habits.js - in production use a database)
 let habits = [];
 
-export default function handler(req, res) {
+module.exports = function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
