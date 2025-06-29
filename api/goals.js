@@ -1,5 +1,5 @@
-// Goals API endpoint with Postgres database
-import { 
+// Goals API endpoint with Neon database
+const { 
   initializeDatabase,
   getGoals,
   createGoal,
@@ -7,7 +7,7 @@ import {
   toggleSubtask,
   deleteSubtask,
   deleteGoal
-} from '../lib/db.ts';
+} = require('../lib/db.js');
 
 module.exports = async function handler(req, res) {
   // Enable CORS

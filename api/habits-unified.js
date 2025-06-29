@@ -1,5 +1,5 @@
-// Unified API endpoint for all habit operations with Postgres database
-import { 
+// Unified API endpoint for all habit operations with Neon database
+const { 
   initializeDatabase,
   getHabits,
   createHabit,
@@ -7,7 +7,7 @@ import {
   uncompleteHabit,
   updateHabitCounter,
   deleteHabit
-} from '../lib/db.ts';
+} = require('../lib/db.js');
 
 module.exports = async function handler(req, res) {
   // Enable CORS
