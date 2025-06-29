@@ -18,7 +18,7 @@ function App() {
 
   const fetchHabits = async () => {
     try {
-      const response = await fetch('/api/habits');
+      const response = await fetch('/api/habits-unified?action=list');
       const data = await response.json();
       setHabits(data);
     } catch (error) {
@@ -31,7 +31,7 @@ function App() {
     if (!newHabitName.trim()) return;
 
     try {
-      const response = await fetch('/api/habits', {
+      const response = await fetch('/api/habits-unified?action=create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,10 +50,10 @@ function App() {
 
   const toggleHabitCompletion = async (habitId: number, isCompleted: boolean) => {
     try {
-      const url = `/api/habits/${habitId}/complete`;
-      const method = isCompleted ? 'DELETE' : 'POST';
+      const action = isCompleted ? 'uncomplete' : 'complete';
+      const url = `/api/habits-unified?action=${action}&id=${habitId}`;
       
-      const response = await fetch(url, { method });
+      const response = await fetch(url, { method: 'POST' });
       
       if (response.ok) {
         fetchHabits();
@@ -65,8 +65,8 @@ function App() {
 
   const deleteHabit = async (habitId: number) => {
     try {
-      const response = await fetch(`/api/habits/${habitId}`, {
-        method: 'DELETE',
+      const response = await fetch(`/api/habits-unified?action=delete&id=${habitId}`, {
+        method: 'POST',
       });
       
       if (response.ok) {
