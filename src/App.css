@@ -27,7 +27,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   z-index: -2;
 }
 
@@ -39,9 +39,9 @@ body {
   width: 100%;
   height: 100%;
   background: 
-    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.3) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(0, 0, 0, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 40% 70%, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.8) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(203, 213, 225, 0.4) 0%, transparent 50%),
+    radial-gradient(circle at 40% 70%, rgba(248, 250, 252, 0.6) 0%, transparent 50%);
   z-index: -1;
 }
 
@@ -60,8 +60,8 @@ body {
   margin-bottom: 40px;
   font-size: 3rem;
   font-weight: 700;
-  color: #ffffff;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  color: #1e293b;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   letter-spacing: -0.02em;
 }
 
@@ -73,9 +73,9 @@ body {
   margin-bottom: 40px;
   width: 100%;
   max-width: 500px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(203, 213, 225, 0.5);
   border-radius: 20px;
   padding: 24px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
@@ -97,7 +97,7 @@ body {
 }
 
 .form-label {
-  color: rgba(255, 255, 255, 0.9);
+  color: #475569;
   font-size: 0.9rem;
   font-weight: 500;
   margin-bottom: 4px;
@@ -194,9 +194,9 @@ body {
 
 /* Glass morphism habit cards */
 .habit-item {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(203, 213, 225, 0.5);
   border-radius: 20px;
   padding: 24px;
   display: flex;
@@ -245,7 +245,7 @@ body {
   font-size: 1.3rem;
   font-weight: 600;
   text-align: left;
-  color: #ffffff;
+  color: #1e293b;
   letter-spacing: -0.01em;
 }
 
@@ -253,20 +253,20 @@ body {
   margin: 4px 0;
   font-size: 0.9rem;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.8);
+  color: #64748b;
   text-align: left;
 }
 
 .habit-type-badge {
   display: inline-block;
-  background: rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.9);
+  background: rgba(203, 213, 225, 0.4);
+  color: #475569;
   padding: 4px 12px;
   border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 500;
   margin-bottom: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(203, 213, 225, 0.6);
 }
 
 .progress-bar {
@@ -358,10 +358,10 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.6);
   border-radius: 12px;
   padding: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(203, 213, 225, 0.4);
 }
 
 .counter-btn {
@@ -413,23 +413,23 @@ body {
 
 .goal-achieved {
   font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: #475569;
   font-weight: 500;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.6);
   padding: 4px 8px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(203, 213, 225, 0.4);
 }
 
 .no-habits {
-  color: rgba(255, 255, 255, 0.7);
+  color: #64748b;
   font-style: italic;
   font-weight: 400;
   margin-top: 60px;
   font-size: 1.1rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(203, 213, 225, 0.4);
   border-radius: 16px;
   padding: 32px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
