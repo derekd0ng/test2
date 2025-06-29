@@ -286,6 +286,108 @@ body {
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
+/* Enhanced Goal Progress Bar */
+.goal-progress-section {
+  margin: 16px 0;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(203, 213, 225, 0.3);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.progress-label {
+  font-weight: 600;
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.progress-percentage {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #1e293b;
+}
+
+.goal-progress-bar {
+  width: 100%;
+  height: 20px;
+  background: rgba(203, 213, 225, 0.3);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.goal-progress-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.goal-progress-fill.very-low {
+  background: linear-gradient(90deg, #ef4444, #f87171);
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+}
+
+.goal-progress-fill.low {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+}
+
+.goal-progress-fill.medium {
+  background: linear-gradient(90deg, #eab308, #facc15);
+  box-shadow: 0 0 8px rgba(234, 179, 8, 0.4);
+}
+
+.goal-progress-fill.high {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+}
+
+.goal-progress-fill.complete {
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.5);
+}
+
+.progress-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: shine 2s infinite;
+}
+
+@keyframes shine {
+  0% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.progress-stats {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #64748b;
+  text-align: center;
+  font-weight: 500;
+}
+
 .habit-actions {
   display: flex;
   gap: 12px;
@@ -719,6 +821,19 @@ body {
   .subtask-item {
     padding: 6px 8px;
     font-size: 0.85rem;
+  }
+  
+  .goal-progress-section {
+    padding: 12px;
+    margin: 12px 0;
+  }
+  
+  .progress-percentage {
+    font-size: 1rem;
+  }
+  
+  .goal-progress-bar {
+    height: 16px;
   }
 }
 

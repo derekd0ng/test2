@@ -520,13 +520,22 @@ const GoalItem: React.FC<{
           <p className="goal-target-date">Target: {new Date(goal.targetDate).toLocaleDateString()}</p>
         )}
         
-        <p>Progress: {goal.subtasks.filter(t => t.completed).length} / {goal.subtasks.length} tasks completed</p>
-        
-        <div className="progress-bar">
-          <div 
-            className="progress-fill" 
-            style={{ width: `${progress}%` }}
-          ></div>
+        <div className="goal-progress-section">
+          <div className="progress-header">
+            <span className="progress-label">Progress</span>
+            <span className="progress-percentage">{Math.round(progress)}%</span>
+          </div>
+          <div className="goal-progress-bar">
+            <div 
+              className={`goal-progress-fill ${progress === 100 ? 'complete' : progress >= 75 ? 'high' : progress >= 50 ? 'medium' : progress >= 25 ? 'low' : 'very-low'}`}
+              style={{ width: `${progress}%` }}
+            >
+              <div className="progress-shine"></div>
+            </div>
+          </div>
+          <div className="progress-stats">
+            {goal.subtasks.filter(t => t.completed).length} of {goal.subtasks.length} tasks completed
+          </div>
         </div>
 
         <div className="subtasks-section">
