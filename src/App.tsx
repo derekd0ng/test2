@@ -11,14 +11,38 @@ interface Habit {
   createdAt: string;
 }
 
+interface Subtask {
+  id: number;
+  name: string;
+  completed: boolean;
+  completedAt?: string;
+}
+
+interface Goal {
+  id: number;
+  name: string;
+  description?: string;
+  subtasks: Subtask[];
+  createdAt: string;
+  targetDate?: string;
+  completed: boolean;
+  completedAt?: string;
+}
+
 function App() {
+  const [activeTab, setActiveTab] = useState<'habits' | 'goals'>('habits');
   const [habits, setHabits] = useState<Habit[]>([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
   const [newHabitName, setNewHabitName] = useState('');
   const [newHabitType, setNewHabitType] = useState<'simple' | 'counter'>('simple');
   const [newHabitGoal, setNewHabitGoal] = useState<number>(1);
+  const [newGoalName, setNewGoalName] = useState('');
+  const [newGoalDescription, setNewGoalDescription] = useState('');
+  const [newGoalTargetDate, setNewGoalTargetDate] = useState('');
 
   useEffect(() => {
     fetchHabits();
+    fetchGoals();
   }, []);
 
   const fetchHabits = async () => {
@@ -139,12 +163,138 @@ function App() {
     return streak;
   };
 
+  // Goals functions
+  const fetchGoals = async () => {
+    try {
+      const response = await fetch('/api/goals?action=list');
+      const data = await response.json();
+      setGoals(data);
+    } catch (error) {
+      console.error('Error fetching goals:', error);
+    }
+  };
+
+  const addGoal = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newGoalName.trim()) return;
+
+    try {
+      const goalData = {
+        name: newGoalName.trim(),
+        description: newGoalDescription.trim(),
+        targetDate: newGoalTargetDate || undefined,
+      };
+
+      const response = await fetch('/api/goals?action=create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(goalData),
+      });
+      
+      if (response.ok) {
+        setNewGoalName('');
+        setNewGoalDescription('');
+        setNewGoalTargetDate('');
+        fetchGoals();
+      }
+    } catch (error) {
+      console.error('Error adding goal:', error);
+    }
+  };
+
+  const addSubtask = async (goalId: number, subtaskName: string) => {
+    if (!subtaskName.trim()) return;
+
+    try {
+      const response = await fetch(`/api/goals?action=add-subtask&id=${goalId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name: subtaskName.trim() }),
+      });
+      
+      if (response.ok) {
+        fetchGoals();
+      }
+    } catch (error) {
+      console.error('Error adding subtask:', error);
+    }
+  };
+
+  const toggleSubtask = async (goalId: number, subtaskId: number) => {
+    try {
+      const response = await fetch(`/api/goals?action=toggle-subtask&id=${goalId}&subtaskId=${subtaskId}`, {
+        method: 'POST',
+      });
+      
+      if (response.ok) {
+        fetchGoals();
+      }
+    } catch (error) {
+      console.error('Error toggling subtask:', error);
+    }
+  };
+
+  const deleteGoal = async (goalId: number) => {
+    try {
+      const response = await fetch(`/api/goals?action=delete&id=${goalId}`, {
+        method: 'POST',
+      });
+      
+      if (response.ok) {
+        fetchGoals();
+      }
+    } catch (error) {
+      console.error('Error deleting goal:', error);
+    }
+  };
+
+  const deleteSubtask = async (goalId: number, subtaskId: number) => {
+    try {
+      const response = await fetch(`/api/goals?action=delete-subtask&id=${goalId}&subtaskId=${subtaskId}`, {
+        method: 'POST',
+      });
+      
+      if (response.ok) {
+        fetchGoals();
+      }
+    } catch (error) {
+      console.error('Error deleting subtask:', error);
+    }
+  };
+
+  const getGoalProgress = (goal: Goal) => {
+    if (goal.subtasks.length === 0) return 0;
+    const completedCount = goal.subtasks.filter(subtask => subtask.completed).length;
+    return (completedCount / goal.subtasks.length) * 100;
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Habit Tracker</h1>
+        <h1>Habit & Goal Tracker</h1>
         
-        <form onSubmit={addHabit} className="add-habit-form">
+        <div className="tab-navigation">
+          <button 
+            className={`tab-button ${activeTab === 'habits' ? 'active' : ''}`}
+            onClick={() => setActiveTab('habits')}
+          >
+            Habits
+          </button>
+          <button 
+            className={`tab-button ${activeTab === 'goals' ? 'active' : ''}`}
+            onClick={() => setActiveTab('goals')}
+          >
+            Goals
+          </button>
+        </div>
+
+        {activeTab === 'habits' ? (
+          <>
+            <form onSubmit={addHabit} className="add-habit-form">
           <div className="form-row">
             <input
               type="text"
@@ -264,12 +414,194 @@ function App() {
           })}
         </div>
 
-        {habits.length === 0 && (
-          <p className="no-habits">No habits yet. Add one to get started!</p>
+            {habits.length === 0 && (
+              <p className="no-habits">No habits yet. Add one to get started!</p>
+            )}
+          </>
+        ) : (
+          <>
+            <form onSubmit={addGoal} className="add-habit-form">
+              <div className="form-row">
+                <input
+                  type="text"
+                  value={newGoalName}
+                  onChange={(e) => setNewGoalName(e.target.value)}
+                  placeholder="Enter goal name"
+                  className="habit-input"
+                />
+              </div>
+              
+              <div className="form-row">
+                <div className="input-group">
+                  <label className="form-label">Description (optional):</label>
+                  <input
+                    type="text"
+                    value={newGoalDescription}
+                    onChange={(e) => setNewGoalDescription(e.target.value)}
+                    placeholder="Goal description"
+                    className="habit-input"
+                  />
+                </div>
+                
+                <div className="input-group">
+                  <label className="form-label">Target Date (optional):</label>
+                  <input
+                    type="date"
+                    value={newGoalTargetDate}
+                    onChange={(e) => setNewGoalTargetDate(e.target.value)}
+                    className="habit-select"
+                  />
+                </div>
+              </div>
+              
+              <button type="submit" className="add-button">Add Goal</button>
+            </form>
+
+            <div className="habits-list">
+              {goals.map((goal) => {
+                const progress = getGoalProgress(goal);
+                const isCompleted = goal.completed;
+                
+                return (
+                  <GoalItem 
+                    key={goal.id} 
+                    goal={goal} 
+                    progress={progress}
+                    isCompleted={isCompleted}
+                    onAddSubtask={addSubtask}
+                    onToggleSubtask={toggleSubtask}
+                    onDeleteSubtask={deleteSubtask}
+                    onDeleteGoal={deleteGoal}
+                  />
+                );
+              })}
+            </div>
+
+            {goals.length === 0 && (
+              <p className="no-habits">No goals yet. Add one to get started!</p>
+            )}
+          </>
         )}
       </header>
     </div>
   );
 }
+
+const GoalItem: React.FC<{
+  goal: Goal;
+  progress: number;
+  isCompleted: boolean;
+  onAddSubtask: (goalId: number, subtaskName: string) => void;
+  onToggleSubtask: (goalId: number, subtaskId: number) => void;
+  onDeleteSubtask: (goalId: number, subtaskId: number) => void;
+  onDeleteGoal: (goalId: number) => void;
+}> = ({ goal, progress, isCompleted, onAddSubtask, onToggleSubtask, onDeleteSubtask, onDeleteGoal }) => {
+  const [newSubtaskName, setNewSubtaskName] = useState('');
+  const [showAddSubtask, setShowAddSubtask] = useState(false);
+
+  const handleAddSubtask = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newSubtaskName.trim()) return;
+    
+    onAddSubtask(goal.id, newSubtaskName);
+    setNewSubtaskName('');
+    setShowAddSubtask(false);
+  };
+
+  return (
+    <div className={`habit-item goal-item ${isCompleted ? 'completed' : ''}`}>
+      <div className="habit-info goal-info">
+        <h3>{goal.name}</h3>
+        <div className="habit-type-badge">Goal</div>
+        
+        {goal.description && <p className="goal-description">{goal.description}</p>}
+        
+        {goal.targetDate && (
+          <p className="goal-target-date">Target: {new Date(goal.targetDate).toLocaleDateString()}</p>
+        )}
+        
+        <p>Progress: {goal.subtasks.filter(t => t.completed).length} / {goal.subtasks.length} tasks completed</p>
+        
+        <div className="progress-bar">
+          <div 
+            className="progress-fill" 
+            style={{ width: `${progress}%` }}
+          ></div>
+        </div>
+
+        <div className="subtasks-section">
+          <h4>Subtasks:</h4>
+          {goal.subtasks.map((subtask) => (
+            <div key={subtask.id} className={`subtask-item ${subtask.completed ? 'completed' : ''}`}>
+              <label className="subtask-label">
+                <input
+                  type="checkbox"
+                  checked={subtask.completed}
+                  onChange={() => onToggleSubtask(goal.id, subtask.id)}
+                  className="subtask-checkbox"
+                />
+                <span className={`subtask-name ${subtask.completed ? 'completed-text' : ''}`}>
+                  {subtask.name}
+                </span>
+              </label>
+              <button
+                onClick={() => onDeleteSubtask(goal.id, subtask.id)}
+                className="delete-subtask-btn"
+              >
+                ×
+              </button>
+            </div>
+          ))}
+          
+          {showAddSubtask ? (
+            <form onSubmit={handleAddSubtask} className="add-subtask-form">
+              <input
+                type="text"
+                value={newSubtaskName}
+                onChange={(e) => setNewSubtaskName(e.target.value)}
+                placeholder="New subtask"
+                className="subtask-input"
+                autoFocus
+              />
+              <div className="subtask-form-buttons">
+                <button type="submit" className="add-subtask-btn">Add</button>
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    setShowAddSubtask(false);
+                    setNewSubtaskName('');
+                  }}
+                  className="cancel-subtask-btn"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          ) : (
+            <button
+              onClick={() => setShowAddSubtask(true)}
+              className="add-subtask-trigger"
+            >
+              + Add Subtask
+            </button>
+          )}
+        </div>
+        
+        {progress === 100 && !isCompleted && (
+          <div className="goal-achieved">🎯 Goal Complete! All tasks finished!</div>
+        )}
+      </div>
+      
+      <div className="habit-actions">
+        <button
+          onClick={() => onDeleteGoal(goal.id)}
+          className="delete-button"
+        >
+          Delete Goal
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export default App;
