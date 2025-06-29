@@ -27,7 +27,7 @@ module.exports = function handler(req, res) {
 
       case 'create':
         // POST create new habit
-        const { name } = req.body;
+        const { name, type, goal } = req.body;
         if (!name) {
           return res.status(400).json({ error: 'Habit name is required' });
         }
@@ -35,7 +35,10 @@ module.exports = function handler(req, res) {
         const newHabit = {
           id: nextId++,
           name,
-          completions: [],
+          type: type || 'simple', // 'simple' or 'counter'
+          goal: type === 'counter' ? (goal || 1) : null,
+          completions: [], // For simple habits: ['2024-01-01']
+          counterData: {}, // For counter habits: {'2024-01-01': 25}
           createdAt: new Date().toISOString()
         };
         habits.push(newHabit);
@@ -53,27 +56,53 @@ module.exports = function handler(req, res) {
         break;
 
       case 'complete':
-        // POST mark as complete
+        // POST mark as complete (simple habits only)
         const habit = habits.find(h => h.id === parseInt(id));
         if (!habit) {
           return res.status(404).json({ error: 'Habit not found' });
         }
         
-        if (!habit.completions.includes(today)) {
+        if (habit.type === 'simple' && !habit.completions.includes(today)) {
           habit.completions.push(today);
         }
         res.status(200).json(habit);
         break;
 
       case 'uncomplete':
-        // DELETE completion
+        // DELETE completion (simple habits only)
         const habitToUncomplete = habits.find(h => h.id === parseInt(id));
         if (!habitToUncomplete) {
           return res.status(404).json({ error: 'Habit not found' });
         }
         
-        habitToUncomplete.completions = habitToUncomplete.completions.filter(date => date !== today);
+        if (habitToUncomplete.type === 'simple') {
+          habitToUncomplete.completions = habitToUncomplete.completions.filter(date => date !== today);
+        }
         res.status(200).json(habitToUncomplete);
+        break;
+
+      case 'update-counter':
+        // POST update counter value
+        const { count } = req.body;
+        const counterHabit = habits.find(h => h.id === parseInt(id));
+        if (!counterHabit) {
+          return res.status(404).json({ error: 'Habit not found' });
+        }
+        
+        if (counterHabit.type === 'counter') {
+          counterHabit.counterData[today] = parseInt(count) || 0;
+          
+          // Mark as completed if goal is reached
+          if (counterHabit.counterData[today] >= counterHabit.goal) {
+            if (!counterHabit.completions.includes(today)) {
+              counterHabit.completions.push(today);
+            }
+          } else {
+            // Remove completion if goal is no longer met
+            counterHabit.completions = counterHabit.completions.filter(date => date !== today);
+          }
+        }
+        res.status(200).json(counterHabit);
         break;
 
       default:
