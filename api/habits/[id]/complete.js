@@ -1,5 +1,4 @@
-// Simple in-memory storage (shared - in production use a database)
-let habits = [];
+const store = require('../../_store');
 
 module.exports = function handler(req, res) {
   // Enable CORS
@@ -13,24 +12,25 @@ module.exports = function handler(req, res) {
   }
 
   const { id } = req.query;
-  const habitId = parseInt(id);
-  const habit = habits.find(h => h.id === habitId);
-  
-  if (!habit) {
-    return res.status(404).json({ error: 'Habit not found' });
-  }
-
   const today = new Date().toISOString().split('T')[0];
 
   if (req.method === 'POST') {
     // POST /api/habits/[id]/complete - Mark habit complete for today
-    if (!habit.completions.includes(today)) {
-      habit.completions.push(today);
+    const habit = store.addCompletion(id, today);
+    
+    if (!habit) {
+      return res.status(404).json({ error: 'Habit not found' });
     }
+    
     res.status(200).json(habit);
   } else if (req.method === 'DELETE') {
     // DELETE /api/habits/[id]/complete - Remove today's completion
-    habit.completions = habit.completions.filter(date => date !== today);
+    const habit = store.removeCompletion(id, today);
+    
+    if (!habit) {
+      return res.status(404).json({ error: 'Habit not found' });
+    }
+    
     res.status(200).json(habit);
   } else {
     res.status(405).json({ error: 'Method not allowed' });

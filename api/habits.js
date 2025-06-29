@@ -1,6 +1,4 @@
-// Simple in-memory storage (resets on each deployment)
-let habits = [];
-let nextId = 1;
+const store = require('./_store');
 
 module.exports = function handler(req, res) {
   // Enable CORS
@@ -15,7 +13,7 @@ module.exports = function handler(req, res) {
 
   if (req.method === 'GET') {
     // GET /api/habits - Get all habits
-    res.status(200).json(habits);
+    res.status(200).json(store.getHabits());
   } else if (req.method === 'POST') {
     // POST /api/habits - Create new habit
     const { name } = req.body;
@@ -24,14 +22,7 @@ module.exports = function handler(req, res) {
       return res.status(400).json({ error: 'Habit name is required' });
     }
 
-    const newHabit = {
-      id: nextId++,
-      name,
-      completions: [],
-      createdAt: new Date().toISOString()
-    };
-
-    habits.push(newHabit);
+    const newHabit = store.addHabit(name);
     res.status(201).json(newHabit);
   } else {
     res.status(405).json({ error: 'Method not allowed' });

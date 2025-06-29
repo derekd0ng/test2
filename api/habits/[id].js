@@ -1,5 +1,4 @@
-// Simple in-memory storage (shared with habits.js - in production use a database)
-let habits = [];
+const store = require('../_store');
 
 module.exports = function handler(req, res) {
   // Enable CORS
@@ -13,17 +12,15 @@ module.exports = function handler(req, res) {
   }
 
   const { id } = req.query;
-  const habitId = parseInt(id);
 
   if (req.method === 'DELETE') {
     // DELETE /api/habits/[id] - Delete habit
-    const habitIndex = habits.findIndex(h => h.id === habitId);
+    const success = store.deleteHabit(id);
     
-    if (habitIndex === -1) {
+    if (!success) {
       return res.status(404).json({ error: 'Habit not found' });
     }
 
-    habits.splice(habitIndex, 1);
     res.status(204).end();
   } else {
     res.status(405).json({ error: 'Method not allowed' });
